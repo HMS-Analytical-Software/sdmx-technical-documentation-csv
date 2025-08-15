@@ -1,0 +1,7 @@
+site_name: SDMX-CSV
+
+nav:
+  - SDMX-CSV:
+    - index.md
+    - Data Message Field Guide: data-message-field-guide.md
+    - Metadata Message Field Guide: metadata-message-field-guide.md
