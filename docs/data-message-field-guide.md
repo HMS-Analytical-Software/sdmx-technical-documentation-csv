@@ -140,146 +140,189 @@ Optional parameters can be added to the HTTP Accept header. They need to be sepa
 
 Note: All examples assume the minimal HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0`
 
-##### 1) Ordinary case
+### 1) Ordinary case
 
+```csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_2,ATTR_3,ATTR_1,UPDATED
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A,B,2014-01,12.4,Y,"Normal, special and other values",N,2021-01-22T13:15:41Z
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A,B,2014-02,10.8,Y,"Normal, special and other values",Y,2021-01-22T13:15:41Z
+```
 
 Notes:  
 
 - The following default parameter settings are automatically applied:
-  - labels=id
-  - timeFormat=original
+  - `labels=id`
+  - `timeFormat=original`
 - *UPDATED* is a custom column
 
-##### 2) Components in any order, missing component(s), component with multiple values
+### 2) Components in any order, missing component(s), component with multiple values
 
+``` csv
  STRUCTURE[;],STRUCTURE_ID,ACTION,OBS_VALUE1,OBS_VALUE2,ATTR_3,ATTR_1[],DIM_2,DIM_1,DIM_3
  dataflow,ESTAT:NA_MAIN(1.6.0),I,12.4,12.5,"Normal, special and other values",X;Y,B,A,2014-01
- dataflow,ESTAT:NA_MAIN(1.6.0),I,10.8,10.9,"Normal, special and other values",X;Z,B,A,2014-02
+ dataflow,ESTAT:NA_MAIN(1.6.0),I,10.8,10.9,"Normal, special and other values",X;Z,B,A,2014-02```
+```
 
-##### 3) Components in any order and missing component, HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; key=series`
+### 3) Components in any order and missing component, HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; key=series`
 
+``` csv
  STRUCTURE[;],STRUCTURE_ID,ACTION,SERIES_KEY,OBS_VALUE1,OBS_VALUE2,ATTR_3,ATTR_1,DIM_2,DIM_1,DIM_3
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A.B,12.4,12.5,"Normal, special and other values",N,B,A,2014-01
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A.B,10.8,10.9,"Normal, special and other values",Y,B,A,2014-02
+```
 
-##### 4) Localisation: HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; labels=both; key=both`, HTTP Accept-Language header: `fr-FR, en;q=0.7`
+### 4) Localisation: HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; labels=both; key=both`, HTTP Accept-Language header: `fr-FR, en;q=0.7`
 
+``` csv
  STRUCTURE[|];STRUCTURE_ID;ACTION;SERIES_KEY;OBS_KEY;DIM_1: Dimension 1;DIM_2: Dimension 2;DIM_3: Dimension 3;OBS_VALUE: Observation value;ATTR_2: Attribut 2;ATTR_3: Attribut 3;ATTR_1: Attribut 1
  dataflow;ESTAT:NA_MAIN(1.6.0): Principaux agrégats des comptes nationaux;I;A.B;A.B.2014-01;A: Value A;B: Value B;2014-01: 2014-01;12,4;Y: Oui;Normal, special and other values;N: Non
  dataflow;ESTAT:NA_MAIN(1.6.0): Principaux agrégats des comptes nationaux;I;A.B;A.B.2014-02;A: Value A;B: Value B;2014-02: 2014-02;10,8;Y: Oui;Normal, special and other values;Y: Oui
+```
 
 Note that in this example the client prefers French (fr) language with the France (FR) locale, but will also accept any type of English. Therefore, in the message the French language with the France locale is applied, transforming also the field separator from comma (,) to semicolon (;), and the decimal separator from dot (.) to comma (,).
 
-##### 5) HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; labels=both; timeFormat=normalized`
+### 5) HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; labels=both; timeFormat=normalized`
 
+``` csv
  STRUCTURE[;],STRUCTURE_ID,ACTION,DIM_1: Dimension 1,DIM_2: Dimension 2,DIM_3: Dimension 3,OBS_VALUE: Observation value,ATTR_2: Attribute 2,ATTR_3: Attribute 3,ATTR_1: Attribute 1
  dataflow,ESTAT:NA_MAIN(1.6.0): National Accounts Main Aggregates,I,A: Value A,B: Value B,2014-01-01,12.4,Y: Yes,"Normal, special and other values",N: No
  dataflow,ESTAT:NA_MAIN(1.6.0): National Accounts Main Aggregates,I,A: Value A,B: Value B,2014-02-01,10.8,Y: Yes,"Normal, special and other values",Y: Yes
+```
 
-##### 6) HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; labels=name`
+### 6) HTTP Accept header: `application/vnd.sdmx.data+csv; version=1.0.0; labels=name`
 
+``` csv
  STRUCTURE,STRUCTURE_ID,STRUCTURE_NAME,ACTION,DIM_1,Dimension 1,DIM_2,Dimension 2,DIM_3,Dimension 3,OBS_VALUE,Observation value,ATTR_1,Attribute 1,ATTR_2,Attribute 2,ATTR_3,Attribute 3
  dataflow,ESTAT:NA_MAIN(1.6.0),National Accounts Main Aggregates,I,A,Value A,B,Value B,2014-01,2014-01,12.4,,Y,Yes,"Normal, special and other values",,N,No
  dataflow,ESTAT:NA_MAIN(1.6.0),National Accounts Main Aggregates,I,A,Value A,B,Value B,2014-02,2014-02,10.8,,Y,Yes,"Normal, special and other values",,Y,Yes
+```
 
-##### 7) Multi-valued components
+### 7) Multi-valued components
 
+``` csv
  STRUCTURE[;],STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_1[],ATTR_2[],ATTR_3[]
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A,B,2014-01,12.4,Value X;Value Y,"M, N & O;P & Q",A;B;C
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A,B,2014-02,10.8,Value X;Value Y,"M, N & O;P & Q",A;C
+```
 
-##### 8) Non-coded multi-lingual components, varying dataflows based on the same underlying data structure
+### 8) Non-coded multi-lingual components, varying dataflows based on the same underlying data structure
 
+``` csv
  STRUCTURE[;],STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_1[en;fr]
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A,B,2014-01,12.4,en:Any Value;fr:N'importe quelle Valeur
  dataflow,ESTAT:NA_MAIN(1.7.0),I,A,B,2014-02,10.8,"en:Value ""X"";fr:Valeur ""X"""
+```
 
-##### 9-A) Varying structural artefacts based on same underlying data structure
+### 9-A) Varying structural artefacts based on same underlying data structure
 
+``` csv
  STRUCTURE[;],STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_1[en;fr]
  dataflow,ESTAT:DF_NA_MAIN(1.6.0),I,A,B,2014-01,12.4,en:Any Value;fr:N'importe quelle Valeur
  datastructure,ESTAT:DSD_NA_MAIN(1.7.0),I,A,B,2014-02,10.8,"en:Value ""X"";fr:Valeur ""X"""
  dataprovision,ESTAT:DPA_NA_MAIN(1.8.0),I,A,B,2014-03,11.2,"en:Value ""Y"";fr:Valeur ""Y"""
+```
 
-##### 9-B) Varying structural artefacts based on different underlying data structures
+### 9-B) Varying structural artefacts based on different underlying data structures
 
+``` csv
  STRUCTURE[;],STRUCTURE_ID,ACTION,DIM_A1B1,DIM_A2,DIM_A3C2,DIM_B2,DIM_C1,DIM_C3,MEAS_A1B1C1,MEAS_C2,ATTR_A1,ATTR_B1
  dataflow,ESTAT:DF_A(1.6.0),I,DIMVAL_A1B1,DIMVAL_A2,DIMVAL_A3C2,,,,"MEASVAL_A1B1C1",,"ATTRVAL_A1",
  datastructure,ESTAT:DSD_B(1.7.0),I,DIMVAL_A1B1,,,DIMVAL_B2,,,"MEASVAL_A1B1C1",,,"ATTRVAL_B1"
  dataprovision,ESTAT:DPA_C(1.8.0),I,,,DIMVAL_A3C2,,DIMVAL_C1,DIMVAL_C3,"MEAS_A1B1C1","MEAS_C2",,
+```
 
-##### 10) Varying actions
+### 10) Varying actions
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_1
  dataflow,ESTAT:NA_MAIN(1.6.0),A,A,B,2014-01,12.4,X
  dataflow,ESTAT:NA_MAIN(1.6.0),R,A,B,2014-02,10.8,Y
+```
 
-##### 11) Data for a non-versioned(1) data structure definition
+### 11) Data for a non-versioned(1) data structure definition
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_1
  datastructure,AGENCY:DF_ID,I,A,B,2014-01,12.4,N
  datastructure,AGENCY:DF_ID,I,A,B,2014-02,10.8,Y
+```
 
-##### 12) Attributes attached to partial keys for a data provision agreement
+### 12) Attributes attached to partial keys for a data provision agreement
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_2,DIM_3,ATTR_1
  dataprovision,AGENCY:DPA_ID(1.0.0),I,B,2014-01,N
  dataprovision,AGENCY:DPA_ID(1.0.0),I,B,2014-02,Y
+``` 
 
-##### 13) Mixing rows for attributes attached to partial keys with rows for observations
+### 13) Mixing rows for attributes attached to partial keys with rows for observations
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,MEAS_1,ATTR_1,ATTR_2
  dataflow,AGENCY:DF_ID(1.0.0),I,A,B,2014-01,12.4,N,
  dataflow,AGENCY:DF_ID(1.0.0),I,,B,,,,Y
+``` 
 
-##### 14) Nested metadata attributes attached to partial keys
+### 14) Nested metadata attributes attached to partial keys
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_2,COLLECTION.METHOD[en;fr],CONTACT[],CONTACT[].NAME[]
  dataflow,AGENCY:DF_ID(1.0.0),I,A,en:AAA;fr:BBB,Contact 1;Contact 2,"""Contact 1 Name 1;Contact 1 Name 2"";""Contact 1 Name 1;Contact 2 Name 2"""
  dataflow,AGENCY:DF_ID(1.0.0),I,B,en:CCC;fr:DDD,Contact 1;Contact 2;Contact 3,"""Contact 1 Name 1;Contact 1 Name 2"";;""Contact 3 Name 1;Contact 3 Name 2"""
+```
 
-##### 15) Non-coded XHTML-formatted values with line-breaks
+### 15) Non-coded XHTML-formatted values with line-breaks
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_1
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A,B,2014-01,12.4,"<p>This is some ""xhtml"" with a line
  break</p>"
  dataflow,ESTAT:NA_MAIN(1.6.0),I,A,B,2014-02,10.8,"<p>This is some other ""xhtml""</p>"
+```
 
-##### 16) Deleting specific measure and attribute values: all non-empty values (e.g. marked with "-") are deleted
+### 16) Deleting specific measure and attribute values: all non-empty values (e.g. marked with "-") are deleted
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_2,ATTR_3,ATTR_1
  dataflow,ESTAT:NA_MAIN(1.6.0),D,A,B,2014-01,-,,,
  dataflow,ESTAT:NA_MAIN(1.6.0),D,A,B,2014-02,,,-,
+```
 
-##### 17) Deleting specific measure and attribute values with wildcarded dimensions: all non-empty values (e.g. marked with "-") are deleted for all dimension combinations where
+### 17) Deleting specific measure and attribute values with wildcarded dimensions: all non-empty values (e.g. marked with "-") are deleted for all dimension combinations where
 
 - row 2: DIM2=A
 - row 3: DIM2=B
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3,OBS_VALUE,ATTR_2,ATTR_3,ATTR_1
  dataflow,ESTAT:NA_MAIN(1.6.0),D,,A,,-,,,
  dataflow,ESTAT:NA_MAIN(1.6.0),D,,B,,,,-,
+```
 
-##### 18) Deleting whole observations with wildcarded dimensions: all observations are deleted for all dimension combinations where
+### 18) Deleting whole observations with wildcarded dimensions: all observations are deleted for all dimension combinations where
 
 - row 2: DIM2=A
 - row 3: DIM2=B and DIM3=C
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_2,DIM_3
  dataflow,ESTAT:NA_MAIN(1.6.0),D,A,,
  dataflow,ESTAT:NA_MAIN(1.6.0),D,B,C,
+```
 
-##### 19) Deleting all data for a data structure definition
+### 19) Deleting all data for a data structure definition
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION
  datastructure,ESTAT:DSD_NA_MAIN(1.6.0),D
+```
+
 or
 
+``` csv
  STRUCTURE,STRUCTURE_ID,ACTION,DIM_1,DIM_2,DIM_3
  datastructure,ESTAT:DSD_NA_MAIN(1.6.0),D,,,
+```
 
 ------------------------
 
